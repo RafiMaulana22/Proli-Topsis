@@ -9,6 +9,6 @@ class PenilaianController extends Controller
 {
     public function index()
     {
-        return view('Admin.Penilaian.index');
+        return view('Admin.Penilaian.penilaian_view');
     }
 }

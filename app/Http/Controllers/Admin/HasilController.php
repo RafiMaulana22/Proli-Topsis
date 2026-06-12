@@ -9,6 +9,6 @@ class HasilController extends Controller
 {
     public function index()
     {
-        return view('Admin.Hasil.index');
+        return view('Admin.Hasil.hasil_view');
     }
 }
