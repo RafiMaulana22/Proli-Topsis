@@ -14,6 +14,8 @@
 
     <script src="{{ asset('') }}assets/js/head.js"></script>
 
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
+
 </head>
 
 <!-- body start -->
@@ -90,6 +92,10 @@
 
     <!-- App js-->
     <script src="{{ asset('') }}assets/js/app.js"></script>
+
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+
+    <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
 
     @yield('scripts')
 </body>

@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\Admin\MaterialController;
 use App\Http\Controllers\Admin\PenilaianController;
 use App\Http\Controllers\Admin\PeriodeController;
+use App\Http\Controllers\Admin\SubKriteriaController;
 use App\Http\Controllers\Admin\TopsisController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthController;
@@ -34,6 +35,9 @@ Route::middleware('auth')->group(function () {
 
     // Kriteria
     Route::get('/kriteria', [KriteriaController::class, 'index'])->name('kriteria.index');
+
+    // Sub Kriteria
+    Route::get('/sub-kriteria', [SubKriteriaController::class, 'index'])->name('sub-kriteria.index');
 
     // Penilaian
     Route::get('/penilaian', [PenilaianController::class, 'index'])->name('penilaian.index');

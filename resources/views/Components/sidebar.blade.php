@@ -61,7 +61,7 @@
                         <span class="nav-icon">
                             <iconify-icon icon="solar:box-bold-duotone"></iconify-icon>
                         </span>
-                        <span> Material </span>
+                        <span> Data Material </span>
                     </a>
                 </li>
 
