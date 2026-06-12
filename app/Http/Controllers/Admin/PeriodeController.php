@@ -9,6 +9,6 @@ class PeriodeController extends Controller
 {
     public function index()
     {
-        return view('Admin.Periode.index');
+        return view('Admin.Periode.periode_view');
     }
 }

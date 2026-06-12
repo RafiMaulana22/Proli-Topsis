@@ -9,6 +9,6 @@ class TopsisController extends Controller
 {
     public function index()
     {
-        return view('Admin.Topsis.index');
+        return view('Admin.Topsis.topsis_view');
     }
 }

@@ -9,6 +9,6 @@ class KriteriaController extends Controller
 {
     public function index()
     {
-        return view('Admin.Kriteria.index');
+        return view('Admin.Kriteria.kriteria_view');
     }
 }

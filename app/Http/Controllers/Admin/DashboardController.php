@@ -51,6 +51,6 @@ class DashboardController extends Controller
 
         $nilaiChart = [0.9125, 0.8912, 0.8754, 0.8501, 0.8233];
 
-        return view('Admin.Dashboard.index', compact('totalMaterial', 'totalKriteria', 'totalPenilaian', 'materialTerbaik', 'topRanking', 'labelChart', 'nilaiChart'));
+        return view('Admin.Dashboard.dashboard', compact('totalMaterial', 'totalKriteria', 'totalPenilaian', 'materialTerbaik', 'topRanking', 'labelChart', 'nilaiChart'));
     }
 }

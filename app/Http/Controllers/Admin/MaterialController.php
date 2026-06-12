@@ -9,6 +9,6 @@ class MaterialController extends Controller
 {
     public function index()
     {
-        return view('Admin.Material.index');
+        return view('Admin.Material.material_view');
     }
 }
