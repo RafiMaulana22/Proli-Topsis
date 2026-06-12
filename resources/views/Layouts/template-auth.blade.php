@@ -53,30 +53,49 @@
                                             </div>
 
                                             <div class="pt-0">
-                                                <form action="" class="my-4">
+                                                @if (session('error'))
+                                                    <div class="alert alert-danger">
+                                                        {{ session('error') }}
+                                                    </div>
+                                                @endif
+                                                <form action="{{ route('login.authenticate') }}" method="POST"
+                                                    class="my-4">
+                                                    @csrf
                                                     <div class="form-group mb-3">
-                                                        <label class="form-label">
-                                                            Username
-                                                        </label>
+                                                        <label class="form-label">Username</label>
 
-                                                        <input type="text" class="form-control" name="username"
+                                                        <input type="text"
+                                                            class="form-control @error('username') is-invalid @enderror"
+                                                            name="username" value="{{ old('username') }}"
                                                             placeholder="Masukkan Username">
+
+                                                        @error('username')
+                                                            <div class="invalid-feedback">
+                                                                {{ $message }}
+                                                            </div>
+                                                        @enderror
                                                     </div>
 
                                                     <div class="form-group mb-3">
                                                         <label for="password" class="form-label">Password</label>
 
                                                         <div class="input-group">
-                                                            <input class="form-control" type="password" name="password"
-                                                                id="password" placeholder="Masukkan Password">
+                                                            <input
+                                                                class="form-control @error('password') is-invalid @enderror"
+                                                                type="password" name="password" id="password"
+                                                                placeholder="Masukkan Password">
 
                                                             <button class="btn btn-light border" type="button"
                                                                 id="togglePassword">
-
                                                                 <i class="mdi mdi-eye-outline" id="eyeIcon"></i>
-
                                                             </button>
                                                         </div>
+
+                                                        @error('password')
+                                                            <div class="invalid-feedback d-block">
+                                                                {{ $message }}
+                                                            </div>
+                                                        @enderror
                                                     </div>
 
                                                     <div class="form-group mb-0 row">
