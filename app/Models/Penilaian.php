@@ -9,7 +9,7 @@ class Penilaian extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['periode_id', 'material_id', 'kriteria_id', 'nilai'];
+    protected $guarded = ['id'];
 
     public function periode()
     {

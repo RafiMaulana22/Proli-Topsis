@@ -54,7 +54,7 @@
                             <th>Nama Periode</th>
                             <th>Tanggal Mulai</th>
                             <th>Tanggal Selesai</th>
-                            <th>Status</th>
+                            <th>Status Penilaian</th>
                             <th width="220">Aksi</th>
                         </tr>
                     </thead>
@@ -68,10 +68,14 @@
                                 <td>{{ $get->tanggal_selesai }}</td>
 
                                 <td>
-                                    @if ($get->tanggal_selesai < date('Y-m-d'))
-                                        <span class="badge bg-secondary">Selesai</span>
+                                    @if ($get->penilaians_count > 0)
+                                        <span class="badge bg-success">
+                                            Sudah Dinilai
+                                        </span>
                                     @else
-                                        <span class="badge bg-success">Aktif</span>
+                                        <span class="badge bg-warning">
+                                            Belum Dinilai
+                                        </span>
                                     @endif
                                 </td>
 

@@ -10,7 +10,8 @@ class PeriodeController extends Controller
 {
     public function index()
     {
-        $periode = Periode::all();
+        $periode = Periode::withCount('penilaians')->get();
+
         return view('Admin.Periode.periode_view', compact('periode'));
     }
 
@@ -22,7 +23,11 @@ class PeriodeController extends Controller
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
         ]);
 
-        Periode::create($request->all());
+        Periode::create([
+            'nama_periode' => $request->nama_periode,
+            'tanggal_mulai' => $request->tanggal_mulai,
+            'tanggal_selesai' => $request->tanggal_selesai,
+        ]);
 
         return redirect()->route('periode.index')->with('success', 'Periode berhasil ditambahkan.');
     }
@@ -36,7 +41,12 @@ class PeriodeController extends Controller
         ]);
 
         $periode = Periode::findOrFail($id);
-        $periode->update($request->all());
+
+        $periode->update([
+            'nama_periode' => $request->nama_periode,
+            'tanggal_mulai' => $request->tanggal_mulai,
+            'tanggal_selesai' => $request->tanggal_selesai,
+        ]);
 
         return redirect()->route('periode.index')->with('success', 'Periode berhasil diperbarui.');
     }
@@ -44,6 +54,7 @@ class PeriodeController extends Controller
     public function destroy($id)
     {
         $periode = Periode::findOrFail($id);
+
         $periode->delete();
 
         return redirect()->route('periode.index')->with('success', 'Periode berhasil dihapus.');
