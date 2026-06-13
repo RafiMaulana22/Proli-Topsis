@@ -52,7 +52,7 @@
                         <span class="nav-icon">
                             <iconify-icon icon="solar:calendar-bold-duotone"></iconify-icon>
                         </span>
-                        <span> Periode </span>
+                        <span> Data Periode </span>
                     </a>
                 </li>
 

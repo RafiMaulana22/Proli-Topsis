@@ -1,6 +1,6 @@
 @extends('Layouts.template-admin')
 
-@section('title', 'Periode')
+@section('title', 'Data Periode')
 
 @section('breadcrumb')
     <div class="text-end">
