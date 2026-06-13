@@ -1,6 +1,6 @@
 @extends('Layouts.template-admin')
 
-@section('title', 'Periode')
+@section('title', 'Data Material')
 
 @section('breadcrumb')
     <div class="text-end">
@@ -109,12 +109,12 @@
                                                     <div class="col-md-12">
                                                         <label class="form-label">Kode Material</label>
                                                         <input type="text" class="form-control"
-                                                            value="{{ $get->kode_material }}">
+                                                            value="{{ $get->kode_material }}" readonly>
                                                     </div>
 
                                                     <div class="col-md-12">
                                                         <label class="form-label">Nama Material</label>
-                                                        <input type="text" class="form-control"
+                                                        <input type="text" class="form-control" name="nama_material"
                                                             value="{{ $get->nama_material }}">
                                                     </div>
 
@@ -254,10 +254,8 @@
 
                         <div class="row g-3">
 
-                            <div class="col-md-12">
-                                <label class="form-label">Kode Material</label>
-                                <input name="kode_material" type="text" class="form-control" placeholder="MTR-001"
-                                    required>
+                            <div class="alert alert-info">
+                                Kode Material akan dibuat otomatis oleh sistem.
                             </div>
 
                             <div class="col-md-12">
@@ -299,17 +297,19 @@
 @endsection
 
 @section('scripts')
-
     <script>
         $(document).ready(function() {
 
-            $('#tablePeriode').DataTable({
+            $('#tableMaterial').DataTable({
                 responsive: true,
+                autoWidth: false,
                 pageLength: 10,
                 language: {
                     search: "Cari :",
                     lengthMenu: "Tampilkan _MENU_ data",
                     info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                    infoEmpty: "Data tidak tersedia",
+                    zeroRecords: "Data tidak ditemukan",
                     paginate: {
                         previous: "Sebelumnya",
                         next: "Berikutnya"
@@ -319,5 +319,4 @@
 
         });
     </script>
-
 @endsection
