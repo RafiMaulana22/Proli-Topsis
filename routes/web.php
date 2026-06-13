@@ -52,7 +52,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
 
     // User
-    Route::get('/user', [UserController::class, 'index'])->name('user.index');
+    Route::resource('user', UserController::class);
 
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
