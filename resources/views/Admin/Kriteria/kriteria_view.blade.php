@@ -84,8 +84,8 @@
                                             <div class="modal-body">
                                                 <div class="mb-3">
                                                     <label class="form-label">Kode Kriteria</label>
-                                                    <input type="text" name="kode" class="form-control"
-                                                        value="{{ $get->kode }}" required>
+                                                    <input type="text" class="form-control" value="{{ $get->kode }}"
+                                                        readonly>
                                                 </div>
 
                                                 <div class="mb-3">
@@ -174,10 +174,8 @@
                 <form action="{{ route('kriteria.store') }}" method="POST">
                     @csrf
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Kode Kriteria</label>
-                            <input type="text" name="kode" class="form-control" placeholder="Contoh : C1"
-                                required>
+                        <div class="alert alert-info">
+                            Kode Kriteria akan dibuat otomatis oleh sistem.
                         </div>
 
                         <div class="mb-3">
