@@ -25,30 +25,29 @@
 @section('content')
 
     <div class="card">
-
         <div class="card-header d-flex justify-content-between align-items-center">
-
             <div>
                 <h5 class="mb-0">Data Sub Kriteria</h5>
                 <small class="text-muted">
-                    Kriteria : Harga (C1)
+                    {{-- Logika untuk menampilkan filter nama kriteria di header --}}
+                    @if (request()->has('kriteria_id'))
+                        Kriteria :
+                        {{ $kriteria->where('id', request('kriteria_id'))->first()->nama_kriteria ?? 'Tidak Diketahui' }}
+                    @else
+                        Semua Kriteria
+                    @endif
                 </small>
             </div>
 
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahSubKriteria">
-
                 <i class="mdi mdi-plus"></i>
                 Tambah Sub Kriteria
             </button>
-
         </div>
 
         <div class="card-body">
-
             <div class="table-responsive">
-
                 <table id="tableSubKriteria" class="table table-bordered table-striped align-middle">
-
                     <thead class="table-light">
                         <tr>
                             <th width="60">No</th>
@@ -60,223 +59,158 @@
                     </thead>
 
                     <tbody>
+                        @foreach ($subkriteria as $get)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                {{-- Memanggil relasi kriteria untuk menampilkan namanya --}}
+                                <td>{{ $get->kriteria->nama_kriteria }}</td>
+                                <td>{{ $get->nama_sub_kriteria }}</td>
+                                <td>{{ $get->nilai }}</td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#modalEditSubKriteria{{ $get->id }}">
+                                        <i class="mdi mdi-pencil"></i>
+                                    </button>
 
-                        <tr>
-                            <td>1</td>
-                            <td>Harga</td>
-                            <td>Sangat Murah</td>
-                            <td>5</td>
-                            <td>
-                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#modalEditSubKriteria">
-                                    <i class="mdi mdi-pencil"></i>
-                                </button>
+                                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#modalHapusSubKriteria{{ $get->id }}">
+                                        <i class="mdi mdi-delete"></i>
+                                    </button>
+                                </td>
+                            </tr>
 
-                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#modalHapusSubKriteria">
-                                    <i class="mdi mdi-delete"></i>
-                                </button>
-                            </td>
-                        </tr>
+                            {{-- Modal Edit (Di dalam Foreach) --}}
+                            <div class="modal fade" id="modalEditSubKriteria{{ $get->id }}">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Edit Sub Kriteria</h5>
+                                            <button class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
 
-                        <tr>
-                            <td>2</td>
-                            <td>Harga</td>
-                            <td>Murah</td>
-                            <td>4</td>
-                            <td>
-                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#modalEditSubKriteria">
-                                    <i class="mdi mdi-pencil"></i>
-                                </button>
+                                        <form action="{{ route('sub-kriteria.update', $get->id) }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <div class="modal-body">
 
-                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#modalHapusSubKriteria">
-                                    <i class="mdi mdi-delete"></i>
-                                </button>
-                            </td>
-                        </tr>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Kriteria Induk</label>
+                                                    <select name="kriteria_id" class="form-select" required>
+                                                        @foreach ($kriteria as $k)
+                                                            <option value="{{ $k->id }}"
+                                                                {{ $get->kriteria_id == $k->id ? 'selected' : '' }}>
+                                                                {{ $k->nama_kriteria }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
 
-                        <tr>
-                            <td>3</td>
-                            <td>Harga</td>
-                            <td>Sedang</td>
-                            <td>3</td>
-                            <td>
-                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#modalEditSubKriteria">
-                                    <i class="mdi mdi-pencil"></i>
-                                </button>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Nama Sub Kriteria</label>
+                                                    <input type="text" name="nama_sub_kriteria" class="form-control"
+                                                        value="{{ $get->nama_sub_kriteria }}" required>
+                                                </div>
 
-                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#modalHapusSubKriteria">
-                                    <i class="mdi mdi-delete"></i>
-                                </button>
-                            </td>
-                        </tr>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Nilai</label>
+                                                    <input type="number" name="nilai" class="form-control"
+                                                        value="{{ $get->nilai }}" required>
+                                                </div>
+                                            </div>
 
-                        <tr>
-                            <td>4</td>
-                            <td>Harga</td>
-                            <td>Mahal</td>
-                            <td>2</td>
-                            <td>
-                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#modalEditSubKriteria">
-                                    <i class="mdi mdi-pencil"></i>
-                                </button>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-warning">Update</button>
+                                            </div>
+                                        </form>
 
-                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#modalHapusSubKriteria">
-                                    <i class="mdi mdi-delete"></i>
-                                </button>
-                            </td>
-                        </tr>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <tr>
-                            <td>5</td>
-                            <td>Harga</td>
-                            <td>Sangat Mahal</td>
-                            <td>1</td>
-                            <td>
-                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#modalEditSubKriteria">
-                                    <i class="mdi mdi-pencil"></i>
-                                </button>
+                            {{-- Modal Hapus (Di dalam Foreach) --}}
+                            <div class="modal fade" id="modalHapusSubKriteria{{ $get->id }}">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-danger text-white">
+                                            <h5 class="modal-title">Konfirmasi Hapus</h5>
+                                            <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                        </div>
 
-                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#modalHapusSubKriteria">
-                                    <i class="mdi mdi-delete"></i>
-                                </button>
-                            </td>
-                        </tr>
+                                        <form action="{{ route('sub-kriteria.destroy', $get->id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <div class="modal-body text-center">
+                                                <i class="mdi mdi-delete-alert text-danger" style="font-size:70px"></i>
+                                                <h5 class="mt-3">Hapus Sub Kriteria?</h5>
+                                                <p class="text-muted">
+                                                    Data <b>{{ $get->nama_sub_kriteria }}</b> yang dihapus tidak dapat
+                                                    dikembalikan.
+                                                </p>
+                                            </div>
 
+                                            <div class="modal-footer justify-content-center">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-danger">Hapus</button>
+                                            </div>
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
                     </tbody>
-
                 </table>
-
             </div>
-
         </div>
-
     </div>
 
-    {{-- Modal Tambah --}}
+    {{-- Modal Tambah (Di luar Foreach) --}}
     <div class="modal fade" id="modalTambahSubKriteria">
         <div class="modal-dialog">
             <div class="modal-content">
-
                 <div class="modal-header">
-                    <h5>Tambah Sub Kriteria</h5>
+                    <h5 class="modal-title">Tambah Sub Kriteria</h5>
                     <button class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
-                <div class="modal-body">
+                <form action="{{ route('sub-kriteria.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
 
-                    <div class="mb-3">
-                        <label class="form-label">
-                            Nama Sub Kriteria
-                        </label>
-                        <input type="text" class="form-control">
+                        <div class="mb-3">
+                            <label class="form-label">Kriteria Induk</label>
+                            <select name="kriteria_id" class="form-select" required>
+                                <option value="" disabled {{ !request()->has('kriteria_id') ? 'selected' : '' }}>--
+                                    Pilih Kriteria --</option>
+                                @foreach ($kriteria as $k)
+                                    <option value="{{ $k->id }}"
+                                        {{ request('kriteria_id') == $k->id ? 'selected' : '' }}>
+                                        {{ $k->nama_kriteria }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Nama Sub Kriteria</label>
+                            <input type="text" name="nama_sub_kriteria" class="form-control"
+                                placeholder="Contoh: Sangat Murah" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Nilai</label>
+                            <input type="number" name="nilai" class="form-control" placeholder="Contoh: 5" required>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">
-                            Nilai
-                        </label>
-                        <input type="number" class="form-control">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
                     </div>
-
-                </div>
-
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">
-                        Batal
-                    </button>
-
-                    <button class="btn btn-primary">
-                        Simpan
-                    </button>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    {{-- Modal Edit --}}
-    <div class="modal fade" id="modalEditSubKriteria">
-        <div class="modal-dialog">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h5>Edit Sub Kriteria</h5>
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-
-                <div class="modal-body">
-
-                    <div class="mb-3">
-                        <label class="form-label">
-                            Nama Sub Kriteria
-                        </label>
-                        <input type="text" class="form-control" value="Murah">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">
-                            Nilai
-                        </label>
-                        <input type="number" class="form-control" value="4">
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">
-                        Batal
-                    </button>
-
-                    <button class="btn btn-warning">
-                        Update
-                    </button>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    {{-- Modal Hapus --}}
-    <div class="modal fade" id="modalHapusSubKriteria">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-
-                <div class="modal-header bg-danger text-white">
-                    <h5>Konfirmasi Hapus</h5>
-                </div>
-
-                <div class="modal-body text-center">
-
-                    <i class="mdi mdi-delete-alert text-danger" style="font-size:70px"></i>
-
-                    <h5>Hapus Sub Kriteria?</h5>
-
-                    <p class="text-muted">
-                        Data yang dihapus tidak dapat dikembalikan.
-                    </p>
-
-                </div>
-
-                <div class="modal-footer justify-content-center">
-
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">
-                        Batal
-                    </button>
-
-                    <button class="btn btn-danger">
-                        Hapus
-                    </button>
-
-                </div>
+                </form>
 
             </div>
         </div>

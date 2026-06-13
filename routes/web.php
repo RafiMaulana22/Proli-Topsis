@@ -28,16 +28,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
     // Periode
-    Route::get('/periode', [PeriodeController::class, 'index'])->name('periode.index');
+    Route::resource('periode', PeriodeController::class);
 
     // Material
-    Route::get('/material', [MaterialController::class, 'index'])->name('material.index');
+     Route::resource('material', MaterialController::class);
 
     // Kriteria
-    Route::get('/kriteria', [KriteriaController::class, 'index'])->name('kriteria.index');
+    Route::resource('kriteria', KriteriaController::class);
 
     // Sub Kriteria
-    Route::get('/sub-kriteria', [SubKriteriaController::class, 'index'])->name('sub-kriteria.index');
+    Route::resource('sub-kriteria', SubKriteriaController::class);
 
     // Penilaian
     Route::get('/penilaian', [PenilaianController::class, 'index'])->name('penilaian.index');

@@ -1,6 +1,6 @@
 @extends('Layouts.template-admin')
 
-@section('title', 'Data Material')
+@section('title', 'Periode')
 
 @section('breadcrumb')
     <div class="text-end">
@@ -8,18 +8,37 @@
             <li class="breadcrumb-item">
                 <a href="{{ route('dashboard.index') }}" class="text-primary">Dashboard</a>
             </li>
-            <li class="breadcrumb-item active">Material</li>
+            <li class="breadcrumb-item active">@yield('title')</li>
         </ol>
     </div>
 @endsection
 
 @section('content')
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" id="alertSuccess" role="alert">
+            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
+                stroke-linecap="round" stroke-linejoin="round" class="me-2">
+                <polyline points="9 11 12 14 22 4"></polyline>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+            </svg>
+            <strong>Success!</strong>
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
 
+        <script>
+            setTimeout(function() {
+                let alertElement = document.getElementById('alertSuccess');
+                if (alertElement) {
+                    let bsAlert = new bootstrap.Alert(alertElement);
+                    bsAlert.close();
+                }
+            }, 2000);
+        </script>
+    @endif
     <div class="card">
-
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Data Material</h5>
-
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahMaterial">
                 <i class="mdi mdi-plus"></i>
                 Tambah Material
@@ -27,185 +46,238 @@
         </div>
 
         <div class="card-body">
-
             <div class="table-responsive">
-
                 <table id="tableMaterial" class="table table-bordered table-striped align-middle">
-
                     <thead class="table-light">
                         <tr>
                             <th width="60">No</th>
                             <th>Kode Material</th>
                             <th>Nama Material</th>
-                            <th>Kategori</th>
                             <th>Status</th>
-                            <th width="150">Aksi</th>
+                            <th width="220">Aksi</th>
                         </tr>
                     </thead>
 
                     <tbody>
+                        @foreach ($material as $get)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $get->kode_material }}</td>
+                                <td>{{ $get->nama_material }}</td>
 
-                        <tr>
-                            <td>1</td>
-                            <td>MTR-001</td>
-                            <td>Stainless Steel 304</td>
-                            <td>Logam</td>
-                            <td>
-                                <span class="badge bg-success">
-                                    Aktif
-                                </span>
-                            </td>
-                            <td>
-                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#modalEditMaterial">
-                                    <i class="mdi mdi-pencil"></i>
-                                </button>
+                                <td>
+                                    @if (strtolower($get->status) == 'aktif')
+                                        <span class="badge bg-success">Aktif</span>
+                                    @else
+                                        <span class="badge bg-secondary">Nonaktif</span>
+                                    @endif
+                                </td>
 
-                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#modalHapusMaterial">
-                                    <i class="mdi mdi-delete"></i>
-                                </button>
-                            </td>
-                        </tr>
+                                <td>
+                                    <button class="btn btn-info btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#modaldetailMaterial{{ $get->id }}">
+                                        <i class="mdi mdi-format-list-bulleted""></i>
+                                    </button>
 
-                        <tr>
-                            <td>2</td>
-                            <td>MTR-002</td>
-                            <td>Aluminium Alloy</td>
-                            <td>Logam</td>
-                            <td>
-                                <span class="badge bg-success">
-                                    Aktif
-                                </span>
-                            </td>
-                            <td>
-                                <button class="btn btn-warning btn-sm">
-                                    <i class="mdi mdi-pencil"></i>
-                                </button>
+                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#modalEditMaterial{{ $get->id }}">
+                                        <i class="mdi mdi-pencil"></i>
+                                    </button>
 
-                                <button class="btn btn-danger btn-sm">
-                                    <i class="mdi mdi-delete"></i>
-                                </button>
-                            </td>
-                        </tr>
+                                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#modalHapusMaterial{{ $get->id }}">
+                                        <i class="mdi mdi-delete"></i>
+                                    </button>
+                                </td>
+                            </tr>
 
-                        <tr>
-                            <td>3</td>
-                            <td>MTR-003</td>
-                            <td>Carbon Steel</td>
-                            <td>Logam</td>
-                            <td>
-                                <span class="badge bg-success">
-                                    Aktif
-                                </span>
-                            </td>
-                            <td>
-                                <button class="btn btn-warning btn-sm">
-                                    <i class="mdi mdi-pencil"></i>
-                                </button>
+                            {{-- MODAL EDIT Material  --}}
+                            <div class="modal fade" id="modalEditMaterial{{ $get->id }}" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Edit Material</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <form action="{{ route('material.update', $get->id) }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <div class="modal-body">
 
-                                <button class="btn btn-danger btn-sm">
-                                    <i class="mdi mdi-delete"></i>
-                                </button>
-                            </td>
-                        </tr>
+                                                <div class="row g-3">
 
-                        <tr>
-                            <td>4</td>
-                            <td>MTR-004</td>
-                            <td>Titanium Grade 2</td>
-                            <td>Logam</td>
-                            <td>
-                                <span class="badge bg-secondary">
-                                    Nonaktif
-                                </span>
-                            </td>
-                            <td>
-                                <button class="btn btn-warning btn-sm">
-                                    <i class="mdi mdi-pencil"></i>
-                                </button>
+                                                    <div class="col-md-12">
+                                                        <label class="form-label">Kode Material</label>
+                                                        <input type="text" class="form-control"
+                                                            value="{{ $get->kode_material }}">
+                                                    </div>
 
-                                <button class="btn btn-danger btn-sm">
-                                    <i class="mdi mdi-delete"></i>
-                                </button>
-                            </td>
-                        </tr>
+                                                    <div class="col-md-12">
+                                                        <label class="form-label">Nama Material</label>
+                                                        <input type="text" class="form-control"
+                                                            value="{{ $get->nama_material }}">
+                                                    </div>
 
-                        <tr>
-                            <td>5</td>
-                            <td>MTR-005</td>
-                            <td>Copper C110</td>
-                            <td>Logam</td>
-                            <td>
-                                <span class="badge bg-success">
-                                    Aktif
-                                </span>
-                            </td>
-                            <td>
-                                <button class="btn btn-warning btn-sm">
-                                    <i class="mdi mdi-pencil"></i>
-                                </button>
+                                                    <div class="col-md-12">
+                                                        <label class="form-label">Status</label>
+                                                        <select class="form-select" name="status">
+                                                            <option value="aktif"
+                                                                {{ strtolower($get->status) == 'aktif' ? 'selected' : '' }}>
+                                                                Aktif</option>
+                                                            <option value="nonaktif"
+                                                                {{ strtolower($get->status) == 'nonaktif' ? 'selected' : '' }}>
+                                                                Nonaktif</option>
+                                                        </select>
+                                                    </div>
 
-                                <button class="btn btn-danger btn-sm">
-                                    <i class="mdi mdi-delete"></i>
-                                </button>
-                            </td>
-                        </tr>
+                                                    <div class="col-md-12 mb-3">
+                                                        <label class="form-label">Deskripsi</label>
+                                                        <textarea name="deskripsi" class="form-control" rows="4">{{ $get->deskripsi }}</textarea>
+                                                    </div>
 
+                                                </div>
+
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button class="btn btn-secondary" data-bs-dismiss="modal">
+                                                    Batal
+                                                </button>
+
+                                                <button type="submit" class="btn btn-warning">
+                                                    Update
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- MODAL Detail Material --}}
+                            <div class="modal fade" id="modaldetailMaterial{{ $get->id }}" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-info text-white">
+                                            <h5 class="modal-title">
+                                                <i class="mdi mdi-information-outline me-1"></i> Detail Material
+                                            </h5>
+                                            <button type="button" class="btn-close btn-close-white"
+                                                data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row g-3">
+
+                                                <div class="col-md-12">
+                                                    <label class="form-label fw-bold">Kode Material</label>
+                                                    <input type="text" class="form-control bg-light"
+                                                        value="{{ $get->kode_material }}" readonly>
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <label class="form-label fw-bold">Nama Material</label>
+                                                    <input type="text" class="form-control bg-light"
+                                                        value="{{ $get->nama_material }}" readonly>
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <label class="form-label fw-bold">Status</label>
+                                                    <input type="text" class="form-control bg-light text-capitalize"
+                                                        value="{{ $get->status }}" readonly>
+                                                </div>
+
+                                                <div class="col-md-12 mb-2">
+                                                    <label class="form-label fw-bold">Deskripsi</label>
+                                                    <textarea class="form-control bg-light" rows="4" readonly>{{ $get->deskripsi }}</textarea>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                Tutup
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- MODAL HAPUS Material --}}
+                            <div class="modal fade" id="modalHapusMaterial{{ $get->id }}" tabindex="-1">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-danger text-white">
+                                            <h5 class="modal-title">Konfirmasi Hapus</h5>
+                                            <button type="button" class="btn-close btn-close-white"
+                                                data-bs-dismiss="modal"></button>
+                                        </div>
+
+                                        <form action="{{ route('material.destroy', $get->id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <div class="modal-body text-center">
+                                                <i class="mdi mdi-alert-circle text-danger" style="font-size:70px"></i>
+                                                <h5 class="mt-3">Hapus Data Material?</h5>
+                                                <p class="text-muted mb-0">Data <b>{{ $get->nama_material }}</b> yang
+                                                    sudah
+                                                    dihapus tidak dapat dikembalikan.</p>
+                                            </div>
+                                            <div class="modal-footer justify-content-center">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-danger">Ya, Hapus</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
                     </tbody>
-
                 </table>
-
             </div>
-
         </div>
-
     </div>
 
-    {{-- Modal Tambah Material --}}
+    {{-- MODAL TAMBAH Material  --}}
     <div class="modal fade" id="modalTambahMaterial" tabindex="-1">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog">
             <div class="modal-content">
-
                 <div class="modal-header">
-                    <h5 class="modal-title">
-                        Tambah Material
-                    </h5>
+                    <h5 class="modal-title">Tambah Material</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
-                <form>
+                {{-- Pastikan Route di bawah ini sesuai dengan nama route Anda --}}
+                <form action="{{ route('material.store') }}" method="POST">
+                    @csrf
                     <div class="modal-body">
 
-                        <div class="row">
+                        <div class="row g-3">
 
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-12">
                                 <label class="form-label">Kode Material</label>
-                                <input type="text" class="form-control" placeholder="MTR-001">
+                                <input name="kode_material" type="text" class="form-control" placeholder="MTR-001"
+                                    required>
                             </div>
 
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-12">
                                 <label class="form-label">Nama Material</label>
-                                <input type="text" class="form-control">
+                                <input name="nama_material" type="text" class="form-control" required>
                             </div>
 
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Kategori</label>
-                                <select class="form-select">
-                                    <option>Logam</option>
-                                    <option>Polimer</option>
-                                    <option>Keramik</option>
-                                    <option>Komposit</option>
-                                </select>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-12">
                                 <label class="form-label">Status</label>
-                                <select class="form-select">
+                                <select name="status" class="form-select" required>
                                     <option>Aktif</option>
                                     <option>Nonaktif</option>
                                 </select>
                             </div>
+
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">Deskripsi</label>
+                                <textarea name="deskripsi" class="form-control" rows="4"></textarea>
+                            </div>
+
 
                         </div>
 
@@ -221,116 +293,6 @@
                         </button>
                     </div>
                 </form>
-
-            </div>
-        </div>
-    </div>
-
-    {{--  Edit Material Modal  --}}
-    <div class="modal fade" id="modalEditMaterial" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        Edit Material
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-
-                <form>
-                    <div class="modal-body">
-
-                        <div class="row">
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Kode Material</label>
-                                <input type="text" class="form-control" value="MTR-001">
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Nama Material</label>
-                                <input type="text" class="form-control" value="Stainless Steel 304">
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Kategori</label>
-                                <select class="form-select">
-                                    <option selected>Logam</option>
-                                    <option>Polimer</option>
-                                    <option>Keramik</option>
-                                    <option>Komposit</option>
-                                </select>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Status</label>
-                                <select class="form-select">
-                                    <option selected>Aktif</option>
-                                    <option>Nonaktif</option>
-                                </select>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" data-bs-dismiss="modal">
-                            Batal
-                        </button>
-
-                        <button type="submit" class="btn btn-warning">
-                            Update
-                        </button>
-                    </div>
-                </form>
-
-            </div>
-        </div>
-    </div>
-
-    {{--  Hapus Material Modal  --}}
-    <div class="modal fade" id="modalHapusMaterial" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h5 class="modal-title text-danger">
-                        Hapus Material
-                    </h5>
-
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-
-                <div class="modal-body">
-
-                    <div class="text-center">
-
-                        <i class="mdi mdi-delete-alert-outline text-danger" style="font-size:70px"></i>
-
-                        <h5 class="mt-3">
-                            Yakin ingin menghapus material ini?
-                        </h5>
-
-                        <p class="text-muted mb-0">
-                            Data yang dihapus tidak dapat dikembalikan.
-                        </p>
-
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">
-                        Batal
-                    </button>
-
-                    <button class="btn btn-danger">
-                        Ya, Hapus
-                    </button>
-                </div>
-
             </div>
         </div>
     </div>
@@ -341,13 +303,13 @@
     <script>
         $(document).ready(function() {
 
-            $('#tableMaterial').DataTable({
+            $('#tablePeriode').DataTable({
                 responsive: true,
                 pageLength: 10,
                 language: {
-                    search: "Cari:",
+                    search: "Cari :",
                     lengthMenu: "Tampilkan _MENU_ data",
-                    info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+                    info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
                     paginate: {
                         previous: "Sebelumnya",
                         next: "Berikutnya"
