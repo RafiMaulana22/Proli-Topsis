@@ -32,7 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('periode', PeriodeController::class);
 
     // Material
-     Route::resource('material', MaterialController::class);
+    Route::resource('material', MaterialController::class);
 
     // Kriteria
     Route::resource('kriteria', KriteriaController::class);
@@ -49,9 +49,13 @@ Route::middleware('auth')->group(function () {
 
     // Hasil
     Route::get('/hasil', [HasilController::class, 'index'])->name('hasil.index');
+    Route::get('/hasil/pdf', [HasilController::class, 'exportPdf'])->name('hasil.pdf');
 
     // Laporan
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
+    Route::get('/laporan/pdf', [LaporanController::class, 'exportPdf'])->name('laporan.pdf');
+    Route::get('/laporan/excel', [LaporanController::class, 'exportExcel'])->name('laporan.excel');
+    Route::get('/laporan/print', [LaporanController::class, 'print'])->name('laporan.print');
 
     // User
     Route::resource('user', UserController::class);

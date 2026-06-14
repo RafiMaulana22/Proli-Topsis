@@ -139,20 +139,55 @@
 
             <div>
 
-                <button class="btn btn-success" disabled>
-                    <i class="mdi mdi-file-excel"></i>
-                    Export Excel
-                </button>
+                @if (request('periode_id') && $hasil->count())
+                    <a href="{{ route('laporan.excel', ['periode_id' => request('periode_id')]) }}" class="btn btn-success">
 
-                <button class="btn btn-danger" disabled>
-                    <i class="mdi mdi-file-pdf-box"></i>
-                    Export PDF
-                </button>
+                        <i class="mdi mdi-file-excel"></i>
+                        Export Excel
 
-                <button class="btn btn-primary">
-                    <i class="mdi mdi-printer"></i>
-                    Print
-                </button>
+                    </a>
+                @else
+                    <button class="btn btn-success" disabled>
+
+                        <i class="mdi mdi-file-excel"></i>
+                        Export Excel
+
+                    </button>
+                @endif
+
+                @if (request('periode_id') && $hasil->count())
+                    <a href="{{ route('laporan.pdf', ['periode_id' => request('periode_id')]) }}" target="_blank"
+                        class="btn btn-danger">
+
+                        <i class="mdi mdi-file-pdf-box"></i>
+                        Export PDF
+
+                    </a>
+                @else
+                    <button class="btn btn-danger" disabled>
+
+                        <i class="mdi mdi-file-pdf-box"></i>
+                        Export PDF
+
+                    </button>
+                @endif
+
+                @if (request('periode_id') && $hasil->count())
+                    <a href="{{ route('laporan.print', ['periode_id' => request('periode_id')]) }}" target="_blank"
+                        class="btn btn-primary">
+
+                        <i class="mdi mdi-printer"></i>
+                        Print
+
+                    </a>
+                @else
+                    <button class="btn btn-primary" disabled>
+
+                        <i class="mdi mdi-printer"></i>
+                        Print
+
+                    </button>
+                @endif
 
             </div>
 

@@ -124,6 +124,21 @@
 
     </div>
 
+    @if (!request('periode_id'))
+        <div class="alert alert-warning">
+
+            Silakan pilih periode terlebih dahulu untuk melihat hasil ranking.
+
+        </div>
+    @elseif($hasil->isEmpty())
+        <div class="alert alert-danger">
+
+            Data ranking untuk periode ini belum tersedia.
+            Silakan lakukan proses TOPSIS terlebih dahulu.
+
+        </div>
+    @endif
+
     {{-- Hasil Ranking --}}
     <div class="card">
 
@@ -133,10 +148,21 @@
                 Hasil Ranking Material
             </h5>
 
-            <button class="btn btn-danger">
-                <i class="mdi mdi-file-pdf-box"></i>
-                Cetak PDF
-            </button>
+            @if (request('periode_id') && $hasil->count() > 0)
+                <a href="{{ route('hasil.pdf', ['periode_id' => request('periode_id')]) }}" class="btn btn-danger"
+                    target="_blank">
+
+                    <i class="mdi mdi-file-pdf-box"></i>
+                    Cetak PDF
+                </a>
+            @else
+                <button class="btn btn-danger" disabled>
+
+                    <i class="mdi mdi-file-pdf-box"></i>
+                    Cetak PDF
+
+                </button>
+            @endif
 
         </div>
 
