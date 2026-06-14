@@ -18,21 +18,124 @@
 @endsection
 
 @section('content')
+    <div class="card mb-3">
+        <div class="card-body">
 
-    {{-- Tombol Proses --}}
-    <div class="card">
-        <div class="card-body text-center">
+            <div class="row align-items-end">
 
-            <h4 class="mb-3">
-                Perhitungan Metode TOPSIS
-            </h4>
+                <div class="col-md-6">
 
-            <button class="btn btn-success btn-lg">
-                <i class="mdi mdi-calculator"></i>
-                Proses TOPSIS
-            </button>
+                    <form method="GET">
+
+                        <label class="form-label">
+                            Periode Penilaian
+                        </label>
+
+                        <select name="periode_id" class="form-select" onchange="this.form.submit()">
+
+                            <option value="">
+                                Pilih Periode
+                            </option>
+
+                            @foreach ($periode as $item)
+                                <option value="{{ $item->id }}"
+                                    {{ request('periode_id') == $item->id ? 'selected' : '' }}>
+                                    {{ $item->nama_periode }}
+                                </option>
+                            @endforeach
+
+                        </select>
+
+                    </form>
+
+                </div>
+
+                <div class="col-md-6 text-end">
+
+                    <form action="{{ route('topsis.proses') }}" method="POST">
+
+                        @csrf
+
+                        <input type="hidden" name="periode_id" value="{{ request('periode_id') }}">
+
+                        <button class="btn btn-success" {{ request('periode_id') ? '' : 'disabled' }}>
+
+                            <i class="mdi mdi-calculator"></i>
+                            Proses TOPSIS
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
 
         </div>
+    </div>
+
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+
+            <div class="card border-primary">
+
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">
+                        Total Alternatif
+                    </h6>
+
+                    <h3>
+                        {{ $penilaian->count() }}
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card border-success">
+
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">
+                        Total Kriteria
+                    </h6>
+
+                    <h3>
+                        {{ $kriteria->count() }}
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card border-warning">
+
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">
+                        Hasil Ranking
+                    </h6>
+
+                    <h3>
+                        {{ $hasil->count() }}
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
     {{-- Matriks Keputusan --}}
@@ -50,41 +153,34 @@
                     <thead class="table-light">
                         <tr>
                             <th>Alternatif</th>
-                            <th>C1</th>
-                            <th>C2</th>
-                            <th>C3</th>
-                            <th>C4</th>
-                            <th>C5</th>
+                            @foreach ($kriteria as $item)
+                                <th>{{ $item->kode }}</th>
+                            @endforeach
                         </tr>
                     </thead>
 
                     <tbody>
-                        <tr>
-                            <td>A1</td>
-                            <td>4</td>
-                            <td>5</td>
-                            <td>5</td>
-                            <td>3</td>
-                            <td>4</td>
-                        </tr>
 
-                        <tr>
-                            <td>A2</td>
-                            <td>5</td>
-                            <td>4</td>
-                            <td>3</td>
-                            <td>5</td>
-                            <td>5</td>
-                        </tr>
+                        @foreach ($penilaian as $item)
+                            <tr>
 
-                        <tr>
-                            <td>A3</td>
-                            <td>3</td>
-                            <td>4</td>
-                            <td>4</td>
-                            <td>4</td>
-                            <td>3</td>
-                        </tr>
+                                <td>
+                                    {{ $item->material->kode_material }}
+                                </td>
+
+                                @foreach ($kriteria as $krit)
+                                    @php
+                                        $detail = $item->detailPenilaians->where('kriteria_id', $krit->id)->first();
+                                    @endphp
+
+                                    <td>
+                                        {{ $detail->nilai ?? 0 }}
+                                    </td>
+                                @endforeach
+
+                            </tr>
+                        @endforeach
+
                     </tbody>
 
                 </table>
@@ -109,41 +205,30 @@
                     <thead class="table-light">
                         <tr>
                             <th>Alternatif</th>
-                            <th>C1</th>
-                            <th>C2</th>
-                            <th>C3</th>
-                            <th>C4</th>
-                            <th>C5</th>
+                            @foreach ($kriteria as $item)
+                                <th>{{ $item->kode }}</th>
+                            @endforeach
                         </tr>
                     </thead>
 
                     <tbody>
-                        <tr>
-                            <td>A1</td>
-                            <td>0.56</td>
-                            <td>0.66</td>
-                            <td>0.70</td>
-                            <td>0.42</td>
-                            <td>0.56</td>
-                        </tr>
 
-                        <tr>
-                            <td>A2</td>
-                            <td>0.70</td>
-                            <td>0.53</td>
-                            <td>0.42</td>
-                            <td>0.70</td>
-                            <td>0.70</td>
-                        </tr>
+                        @foreach ($penilaian as $item)
+                            <tr>
 
-                        <tr>
-                            <td>A3</td>
-                            <td>0.42</td>
-                            <td>0.53</td>
-                            <td>0.56</td>
-                            <td>0.56</td>
-                            <td>0.42</td>
-                        </tr>
+                                <td>
+                                    {{ $item->material->kode_material }}
+                                </td>
+
+                                @foreach ($kriteria as $krit)
+                                    <td>
+                                        {{ number_format($normalisasi[$item->id][$krit->id] ?? 0, 4) }}
+                                    </td>
+                                @endforeach
+
+                            </tr>
+                        @endforeach
+
                     </tbody>
 
                 </table>
@@ -168,41 +253,30 @@
                     <thead class="table-light">
                         <tr>
                             <th>Alternatif</th>
-                            <th>C1</th>
-                            <th>C2</th>
-                            <th>C3</th>
-                            <th>C4</th>
-                            <th>C5</th>
+                            @foreach ($kriteria as $item)
+                                <th>{{ $item->kode }}</th>
+                            @endforeach
                         </tr>
                     </thead>
 
                     <tbody>
-                        <tr>
-                            <td>A1</td>
-                            <td>0.196</td>
-                            <td>0.165</td>
-                            <td>0.140</td>
-                            <td>0.042</td>
-                            <td>0.056</td>
-                        </tr>
 
-                        <tr>
-                            <td>A2</td>
-                            <td>0.245</td>
-                            <td>0.132</td>
-                            <td>0.084</td>
-                            <td>0.070</td>
-                            <td>0.070</td>
-                        </tr>
+                        @foreach ($penilaian as $item)
+                            <tr>
 
-                        <tr>
-                            <td>A3</td>
-                            <td>0.147</td>
-                            <td>0.132</td>
-                            <td>0.112</td>
-                            <td>0.056</td>
-                            <td>0.042</td>
-                        </tr>
+                                <td>
+                                    {{ $item->material->kode_material }}
+                                </td>
+
+                                @foreach ($kriteria as $krit)
+                                    <td>
+                                        {{ number_format($terbobot[$item->id][$krit->id] ?? 0, 4) }}
+                                    </td>
+                                @endforeach
+
+                            </tr>
+                        @endforeach
+
                     </tbody>
 
                 </table>
@@ -225,26 +299,16 @@
                 <div class="card-body">
 
                     <table class="table table-bordered">
-                        <tr>
-                            <td>C1</td>
-                            <td>0.147</td>
-                        </tr>
-                        <tr>
-                            <td>C2</td>
-                            <td>0.165</td>
-                        </tr>
-                        <tr>
-                            <td>C3</td>
-                            <td>0.140</td>
-                        </tr>
-                        <tr>
-                            <td>C4</td>
-                            <td>0.042</td>
-                        </tr>
-                        <tr>
-                            <td>C5</td>
-                            <td>0.070</td>
-                        </tr>
+                        <tbody>
+                            @foreach ($kriteria as $item)
+                                <tr>
+                                    <td>{{ $item->kode }}</td>
+                                    <td>
+                                        {{ number_format($aplus[$item->id] ?? 0, 4) }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
                     </table>
 
                 </div>
@@ -263,26 +327,16 @@
                 <div class="card-body">
 
                     <table class="table table-bordered">
-                        <tr>
-                            <td>C1</td>
-                            <td>0.245</td>
-                        </tr>
-                        <tr>
-                            <td>C2</td>
-                            <td>0.132</td>
-                        </tr>
-                        <tr>
-                            <td>C3</td>
-                            <td>0.084</td>
-                        </tr>
-                        <tr>
-                            <td>C4</td>
-                            <td>0.070</td>
-                        </tr>
-                        <tr>
-                            <td>C5</td>
-                            <td>0.042</td>
-                        </tr>
+                        <tbody>
+                            @foreach ($kriteria as $item)
+                                <tr>
+                                    <td>{{ $item->kode }}</td>
+                                    <td>
+                                        {{ number_format($amin[$item->id] ?? 0, 4) }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
                     </table>
 
                 </div>
@@ -317,32 +371,29 @@
 
                 <tbody>
 
-                    <tr>
-                        <td>
-                            <span class="badge bg-success">1</span>
-                        </td>
-                        <td>A1</td>
-                        <td>Stainless Steel 304</td>
-                        <td>0.7421</td>
-                    </tr>
+                    @foreach ($hasil as $item)
+                        <tr>
 
-                    <tr>
-                        <td>
-                            <span class="badge bg-primary">2</span>
-                        </td>
-                        <td>A2</td>
-                        <td>Aluminium Alloy</td>
-                        <td>0.6512</td>
-                    </tr>
+                            <td>
+                                <span class="badge bg-success">
+                                    {{ $item->ranking }}
+                                </span>
+                            </td>
 
-                    <tr>
-                        <td>
-                            <span class="badge bg-secondary">3</span>
-                        </td>
-                        <td>A3</td>
-                        <td>Carbon Steel</td>
-                        <td>0.5384</td>
-                    </tr>
+                            <td>
+                                A{{ $loop->iteration }}
+                            </td>
+
+                            <td>
+                                {{ $item->material->nama_material }}
+                            </td>
+
+                            <td>
+                                {{ number_format($item->nilai_preferensi, 4) }}
+                            </td>
+
+                        </tr>
+                    @endforeach
 
                 </tbody>
 

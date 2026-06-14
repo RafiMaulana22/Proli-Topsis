@@ -21,8 +21,8 @@ class Penilaian extends Model
         return $this->belongsTo(Material::class);
     }
 
-    public function kriteria()
+    public function detailPenilaians()
     {
-        return $this->belongsTo(Kriteria::class);
+        return $this->hasMany(DetailPenilaian::class);
     }
 }

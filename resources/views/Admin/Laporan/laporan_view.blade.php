@@ -30,32 +30,36 @@
 
         <div class="card-body">
 
-            <div class="row">
+            <form method="GET">
 
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">
-                        Periode Awal
-                    </label>
+                <div class="row">
 
-                    <input type="date" class="form-control">
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Periode
+                        </label>
+
+                        <select name="periode_id" class="form-select" onchange="this.form.submit()">
+
+                            <option value="">
+                                Pilih Periode
+                            </option>
+
+                            @foreach ($periode as $item)
+                                <option value="{{ $item->id }}"
+                                    {{ request('periode_id') == $item->id ? 'selected' : '' }}>
+                                    {{ $item->nama_periode }}
+                                </option>
+                            @endforeach
+
+                        </select>
+
+                    </div>
+
                 </div>
 
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">
-                        Periode Akhir
-                    </label>
-
-                    <input type="date" class="form-control">
-                </div>
-
-                <div class="col-md-4 mb-3 d-flex align-items-end">
-                    <button class="btn btn-primary w-100">
-                        <i class="mdi mdi-magnify"></i>
-                        Tampilkan
-                    </button>
-                </div>
-
-            </div>
+            </form>
 
         </div>
 
@@ -72,7 +76,7 @@
                         Total Material
                     </h6>
 
-                    <h3>10</h3>
+                    <h3>{{ $totalMaterial }}</h3>
 
                 </div>
             </div>
@@ -86,7 +90,7 @@
                         Total Kriteria
                     </h6>
 
-                    <h3>5</h3>
+                    <h3>{{ $totalKriteria }}</h3>
 
                 </div>
             </div>
@@ -100,7 +104,7 @@
                         Total Penilaian
                     </h6>
 
-                    <h3>50</h3>
+                    <h3>{{ $totalPenilaian }}</h3>
 
                 </div>
             </div>
@@ -114,7 +118,9 @@
                         Material Terbaik
                     </h6>
 
-                    <h5>Stainless Steel 304</h5>
+                    <h5>
+                        {{ $materialTerbaik?->material?->nama_material ?? '-' }}
+                    </h5>
 
                 </div>
             </div>
@@ -133,12 +139,12 @@
 
             <div>
 
-                <button class="btn btn-success">
+                <button class="btn btn-success" disabled>
                     <i class="mdi mdi-file-excel"></i>
                     Export Excel
                 </button>
 
-                <button class="btn btn-danger">
+                <button class="btn btn-danger" disabled>
                     <i class="mdi mdi-file-pdf-box"></i>
                     Export PDF
                 </button>
@@ -170,65 +176,73 @@
 
                     <tbody>
 
-                        <tr>
-                            <td>1</td>
-                            <td>MTR-001</td>
-                            <td>Stainless Steel 304</td>
-                            <td>0.7421</td>
-                            <td>
-                                <span class="badge bg-success">
-                                    Sangat Direkomendasikan
-                                </span>
-                            </td>
-                        </tr>
+                        @forelse ($hasil as $item)
+                            <tr>
 
-                        <tr>
-                            <td>2</td>
-                            <td>MTR-002</td>
-                            <td>Aluminium Alloy</td>
-                            <td>0.6512</td>
-                            <td>
-                                <span class="badge bg-primary">
-                                    Direkomendasikan
-                                </span>
-                            </td>
-                        </tr>
+                                <td>
 
-                        <tr>
-                            <td>3</td>
-                            <td>MTR-003</td>
-                            <td>Carbon Steel</td>
-                            <td>0.5384</td>
-                            <td>
-                                <span class="badge bg-warning text-dark">
-                                    Cukup
-                                </span>
-                            </td>
-                        </tr>
+                                    @if ($item->ranking == 1)
+                                        <span class="badge bg-success">
+                                            {{ $item->ranking }}
+                                        </span>
+                                    @elseif ($item->ranking == 2)
+                                        <span class="badge bg-primary">
+                                            {{ $item->ranking }}
+                                        </span>
+                                    @elseif ($item->ranking == 3)
+                                        <span class="badge bg-warning text-dark">
+                                            {{ $item->ranking }}
+                                        </span>
+                                    @else
+                                        {{ $item->ranking }}
+                                    @endif
 
-                        <tr>
-                            <td>4</td>
-                            <td>MTR-004</td>
-                            <td>Titanium Grade 2</td>
-                            <td>0.4721</td>
-                            <td>
-                                <span class="badge bg-warning text-dark">
-                                    Cukup
-                                </span>
-                            </td>
-                        </tr>
+                                </td>
 
-                        <tr>
-                            <td>5</td>
-                            <td>MTR-005</td>
-                            <td>Copper C110</td>
-                            <td>0.3518</td>
-                            <td>
-                                <span class="badge bg-danger">
-                                    Kurang Direkomendasikan
-                                </span>
-                            </td>
-                        </tr>
+                                <td>
+                                    {{ $item->material->kode_material }}
+                                </td>
+
+                                <td>
+                                    {{ $item->material->nama_material }}
+                                </td>
+
+                                <td>
+                                    {{ number_format($item->nilai_preferensi, 4) }}
+                                </td>
+
+                                <td>
+
+                                    @if ($item->ranking == 1)
+                                        <span class="badge bg-success">
+                                            Sangat Direkomendasikan
+                                        </span>
+                                    @elseif ($item->ranking <= 3)
+                                        <span class="badge bg-primary">
+                                            Direkomendasikan
+                                        </span>
+                                    @elseif ($item->ranking <= 5)
+                                        <span class="badge bg-warning text-dark">
+                                            Cukup
+                                        </span>
+                                    @else
+                                        <span class="badge bg-danger">
+                                            Kurang Direkomendasikan
+                                        </span>
+                                    @endif
+
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+                                <td colspan="5" class="text-center">
+                                    Belum ada hasil TOPSIS
+                                </td>
+                            </tr>
+                        @endforelse
 
                     </tbody>
 

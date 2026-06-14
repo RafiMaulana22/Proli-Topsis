@@ -8,13 +8,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class HasilKeputusan extends Model
 {
     use HasFactory;
+    
     protected $table = 'hasil_keputusans';
-    protected $fillable = ['periode_id', 'material_id', 'nilai_preferensi', 'ranking'];
+    protected $guarded = ['id'];
+
     public function periode()
     {
         return $this->belongsTo(Periode::class);
     }
-    
+
     public function material()
     {
         return $this->belongsTo(Material::class);

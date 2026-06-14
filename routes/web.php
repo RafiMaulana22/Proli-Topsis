@@ -41,10 +41,11 @@ Route::middleware('auth')->group(function () {
     Route::resource('sub-kriteria', SubKriteriaController::class);
 
     // Penilaian
-    Route::get('/penilaian', [PenilaianController::class, 'index'])->name('penilaian.index');
+    Route::resource('penilaian', PenilaianController::class);
 
     // Topsis
     Route::get('/topsis', [TopsisController::class, 'index'])->name('topsis.index');
+    Route::post('/topsis/proses', [TopsisController::class, 'proses'])->name('topsis.proses');
 
     // Hasil
     Route::get('/hasil', [HasilController::class, 'index'])->name('hasil.index');
