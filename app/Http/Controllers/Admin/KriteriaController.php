@@ -11,27 +11,63 @@ class KriteriaController extends Controller
     public function index()
     {
         $kriteria = Kriteria::all();
-        return view('Admin.Kriteria.kriteria_view',  compact('kriteria'));
+
+        return view('Admin.Kriteria.kriteria_view', compact('kriteria'));
     }
 
     public function store(Request $request)
     {
-        Kriteria::create($request->all());
+        $request->validate([
+            'nama_kriteria' => 'required',
+            'bobot' => 'required|numeric',
+            'atribut' => 'required',
+        ]);
+
+        $last = Kriteria::latest('id')->first();
+
+        if ($last) {
+            $number = (int) str_replace('C', '', $last->kode) + 1;
+        } else {
+            $number = 1;
+        }
+
+        $kode = 'C' . $number;
+
+        Kriteria::create([
+            'kode' => $kode,
+            'nama_kriteria' => $request->nama_kriteria,
+            'bobot' => $request->bobot,
+            'atribut' => $request->atribut,
+        ]);
+
         return redirect()->route('kriteria.index')->with('success', 'Kriteria berhasil ditambahkan');
     }
 
     public function update(Request $request, $id)
     {
-         $kriteria = Kriteria::findOrFail($id);
-        $kriteria->update($request->all());
-        return redirect()->route('kriteria.index')->with('success', 'Kriteria berhasil diupdate');
+        $request->validate([
+            'nama_kriteria' => 'required',
+            'bobot' => 'required|numeric',
+            'atribut' => 'required',
+        ]);
+
+        $kriteria = Kriteria::findOrFail($id);
+
+        $kriteria->update([
+            'nama_kriteria' => $request->nama_kriteria,
+            'bobot' => $request->bobot,
+            'atribut' => $request->atribut,
+        ]);
+
+        return redirect()->route('kriteria.index')->with('success', 'Kriteria berhasil diperbarui');
     }
 
     public function destroy($id)
     {
         $kriteria = Kriteria::findOrFail($id);
+
         $kriteria->delete();
 
-        return redirect()->route('kriteria.index')->with('success', 'Kriteria berhasil dihapus.');
+        return redirect()->route('kriteria.index')->with('success', 'Kriteria berhasil dihapus');
     }
 }
