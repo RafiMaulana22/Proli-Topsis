@@ -46,7 +46,7 @@
                         </div>
 
                         <!-- item-->
-                        <a class='dropdown-item notify-item rounded-2' href='pages-profile.html'>
+                        <a class='dropdown-item notify-item rounded-2' href='{{ route('profile.index') }}'>
                             <iconify-icon icon="solar:shield-user-outline" class="fs-18 align-middle"></iconify-icon>
                             <span>Profile</span>
                         </a>

@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\Admin\MaterialController;
 use App\Http\Controllers\Admin\PenilaianController;
 use App\Http\Controllers\Admin\PeriodeController;
+use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SubKriteriaController;
 use App\Http\Controllers\Admin\TopsisController;
 use App\Http\Controllers\Admin\UserController;
@@ -53,6 +54,11 @@ Route::middleware('auth')->group(function () {
 
     // User
     Route::resource('user', UserController::class);
+
+    // profile
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::post('/profile/update', [ProfileController::class, 'updateProfile'])->name('profile.update');
+    Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
