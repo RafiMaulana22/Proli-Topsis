@@ -187,20 +187,14 @@
                         @foreach ($hasil as $item)
                             <tr>
 
-                                <td>
+                                <td data-order="{{ $item->ranking }}">
 
                                     @if ($item->ranking == 1)
-                                        <span class="badge bg-success fs-6">
-                                            #1
-                                        </span>
+                                        <span class="badge bg-success fs-6">#1</span>
                                     @elseif($item->ranking == 2)
-                                        <span class="badge bg-primary fs-6">
-                                            #2
-                                        </span>
+                                        <span class="badge bg-primary fs-6">#2</span>
                                     @elseif($item->ranking == 3)
-                                        <span class="badge bg-secondary fs-6">
-                                            #3
-                                        </span>
+                                        <span class="badge bg-secondary fs-6">#3</span>
                                     @else
                                         {{ $item->ranking }}
                                     @endif

@@ -3,54 +3,37 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Material;
+use App\Models\Kriteria;
+use App\Models\Penilaian;
+use App\Models\HasilKeputusan;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $totalMaterial = 125;
-        $totalKriteria = 8;
-        $totalPenilaian = 1250;
+        $totalMaterial = Material::count();
 
-        $materialTerbaik = (object) [
-            'kode_material' => 'MTR-001',
-            'nama_material' => 'Beton K-500',
-            'nilai_preferensi' => 0.9125,
-        ];
+        $totalKriteria = Kriteria::count();
 
-        $topRanking = collect([
-            (object) [
-                'kode_material' => 'MTR-001',
-                'nama_material' => 'Beton K-500',
-                'nilai_preferensi' => 0.9125,
-            ],
-            (object) [
-                'kode_material' => 'MTR-002',
-                'nama_material' => 'Baja Ringan',
-                'nilai_preferensi' => 0.8912,
-            ],
-            (object) [
-                'kode_material' => 'MTR-003',
-                'nama_material' => 'Keramik Premium',
-                'nilai_preferensi' => 0.8754,
-            ],
-            (object) [
-                'kode_material' => 'MTR-004',
-                'nama_material' => 'Granit',
-                'nilai_preferensi' => 0.8501,
-            ],
-            (object) [
-                'kode_material' => 'MTR-005',
-                'nama_material' => 'Aspal Hotmix',
-                'nilai_preferensi' => 0.8233,
-            ],
-        ]);
+        $totalPenilaian = Penilaian::count();
 
-        $labelChart = ['MTR-001', 'MTR-002', 'MTR-003', 'MTR-004', 'MTR-005'];
+        $periodeTerakhir = HasilKeputusan::latest('periode_id')->first()?->periode_id;
 
-        $nilaiChart = [0.9125, 0.8912, 0.8754, 0.8501, 0.8233];
+        $materialTerbaik = HasilKeputusan::with('material')->where('periode_id', $periodeTerakhir)->orderBy('ranking')->first();
 
-        return view('Admin.Dashboard.dashboard', compact('totalMaterial', 'totalKriteria', 'totalPenilaian', 'materialTerbaik', 'topRanking', 'labelChart', 'nilaiChart'));
+        $topRanking = HasilKeputusan::with('material')->where('periode_id', $periodeTerakhir)->orderBy('ranking')->limit(5)->get();
+
+        $labelChart = $topRanking->pluck('material.kode_material')->toArray();
+
+        $nilaiChart = $topRanking->pluck('nilai_preferensi')->toArray();
+
+        $sangatBaik = HasilKeputusan::where('nilai_preferensi', '>=', 0.8)->count();
+
+        $baik = HasilKeputusan::whereBetween('nilai_preferensi', [0.6, 0.79])->count();
+
+        $cukup = HasilKeputusan::where('nilai_preferensi', '<', 0.6)->count();
+
+        return view('Admin.Dashboard.dashboard', compact('totalMaterial', 'totalKriteria', 'totalPenilaian', 'materialTerbaik', 'topRanking', 'labelChart', 'nilaiChart', 'sangatBaik', 'baik', 'cukup'));
     }
 }

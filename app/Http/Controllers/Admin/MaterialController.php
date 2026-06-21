@@ -10,7 +10,7 @@ class MaterialController extends Controller
 {
     public function index()
     {
-        $material = Material::latest()->get();
+        $material = Material::get();
 
         return view('Admin.Material.material_view', compact('material'));
     }
