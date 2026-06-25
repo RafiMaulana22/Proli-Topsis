@@ -63,11 +63,19 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="text-muted">Material Terbaik</h6>
-                            <h5>{{ $materialTerbaik->kode_material ?? '-' }}</h5>
-                            <small>
-                                Nilai :
-                                {{ number_format($materialTerbaik->nilai_preferensi ?? 0, 4) }}
-                            </small>
+
+                            @if ($materialTerbaik)
+                                <h5>
+                                    {{ $materialTerbaik->material->nama_material }}
+                                </h5>
+
+                                <small>
+                                    Nilai :
+                                    {{ number_format($materialTerbaik->nilai_preferensi, 4) }}
+                                </small>
+                            @else
+                                <h5>-</h5>
+                            @endif
                         </div>
                         <i class="mdi mdi-trophy fs-1 text-danger"></i>
                     </div>
@@ -148,40 +156,33 @@
 
                             <tbody>
 
-                                <tr>
-                                    <td>1</td>
-                                    <td>MTR-001</td>
-                                    <td>Stainless Steel 304</td>
-                                    <td>0.9821</td>
-                                </tr>
+                                @forelse ($topRanking as $item)
+                                    <tr>
 
-                                <tr>
-                                    <td>2</td>
-                                    <td>MTR-002</td>
-                                    <td>Aluminium Alloy</td>
-                                    <td>0.9543</td>
-                                </tr>
+                                        <td>
+                                            {{ $item->ranking }}
+                                        </td>
 
-                                <tr>
-                                    <td>3</td>
-                                    <td>MTR-003</td>
-                                    <td>Carbon Steel</td>
-                                    <td>0.9231</td>
-                                </tr>
+                                        <td>
+                                            {{ $item->material->kode_material }}
+                                        </td>
 
-                                <tr>
-                                    <td>4</td>
-                                    <td>MTR-004</td>
-                                    <td>Titanium Grade 2</td>
-                                    <td>0.9012</td>
-                                </tr>
+                                        <td>
+                                            {{ $item->material->nama_material }}
+                                        </td>
 
-                                <tr>
-                                    <td>5</td>
-                                    <td>MTR-005</td>
-                                    <td>Copper C110</td>
-                                    <td>0.8876</td>
-                                </tr>
+                                        <td>
+                                            {{ number_format($item->nilai_preferensi, 4) }}
+                                        </td>
+
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="text-center">
+                                            Belum ada hasil ranking
+                                        </td>
+                                    </tr>
+                                @endforelse
 
                             </tbody>
 
@@ -207,16 +208,10 @@
             },
             series: [{
                 name: 'Nilai',
-                data: [0.98, 0.95, 0.92, 0.90, 0.88]
+                data: {!! json_encode($nilaiChart) !!}
             }],
             xaxis: {
-                categories: [
-                    'MTR-001',
-                    'MTR-002',
-                    'MTR-003',
-                    'MTR-004',
-                    'MTR-005'
-                ]
+                categories: {!! json_encode($labelChart) !!}
             }
         };
 
@@ -231,7 +226,13 @@
                 type: 'donut',
                 height: 300
             },
-            series: [35, 40, 25],
+
+            series: [
+                {{ $sangatBaik }},
+                {{ $baik }},
+                {{ $cukup }}
+            ],
+
             labels: [
                 'Sangat Baik',
                 'Baik',
