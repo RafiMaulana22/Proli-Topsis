@@ -252,15 +252,6 @@
                                 required>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Role Akses</label>
-                            <select name="role" class="form-select" required>
-                                <option value="" selected disabled>Pilih Role</option>
-                                <option value="admin">Admin</option>
-                                <option value="super_admin">Super Admin</option>
-                            </select>
-                        </div>
-
                     </div>
 
                     <div class="modal-footer">

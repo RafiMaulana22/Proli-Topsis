@@ -14,14 +14,33 @@
 @endsection
 
 @section('content')
+    <div class="alert alert-info d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <strong>Total Bobot :</strong>
+            {{ number_format($totalBobot, 2) }}%
+        </div>
+
+        <div>
+            Sisa :
+            <strong>{{ number_format(100 - $totalBobot, 2) }}%</strong>
+        </div>
+    </div>
 
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Data Kriteria</h5>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahKriteria">
-                <i class="mdi mdi-plus"></i>
-                Tambah Kriteria
-            </button>
+            @if ($totalBobot >= 100)
+                <button class="btn btn-secondary" disabled>
+                    <i class="mdi mdi-plus"></i>
+                    Tambah Kriteria
+                </button>
+            @else
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahKriteria">
+
+                    <i class="mdi mdi-plus"></i>
+                    Tambah Kriteria
+                </button>
+            @endif
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -96,7 +115,12 @@
 
                                                 <div class="mb-3">
                                                     <label class="form-label">Bobot</label>
-                                                    <input type="number" step="0.01" name="bobot" class="form-control"
+                                                    @php
+                                                        $maxBobot = 100 - $totalBobot + $get->bobot;
+                                                    @endphp
+
+                                                    <input type="number" name="bobot" class="form-control" step="0.01"
+                                                        min="0.01" max="{{ $maxBobot }}"
                                                         value="{{ $get->bobot }}" required>
                                                 </div>
 
@@ -187,8 +211,8 @@
                         <div class="mb-3">
                             <label class="form-label">Bobot</label>
                             {{-- Menggunakan step="0.01" agar bisa menerima angka desimal (karena tipe datanya decimal(5,2)) --}}
-                            <input type="number" step="0.01" name="bobot" class="form-control"
-                                placeholder="Contoh: 35" required>
+                            <input type="number" name="bobot" class="form-control" step="0.01" min="0.01"
+                                max="{{ 100 - $totalBobot }}" placeholder="Contoh : 20" required>
                         </div>
 
                         <div class="mb-3">

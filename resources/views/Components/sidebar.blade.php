@@ -74,6 +74,15 @@
                     </a>
                 </li>
 
+                <li>
+                    <a class='tp-link' href='{{ route('sub-kriteria.index') }}'>
+                        <span class="nav-icon">
+                            <iconify-icon icon="solar:checklist-bold-duotone"></iconify-icon>
+                        </span>
+                        <span> Sub Kriteria </span>
+                    </a>
+                </li>
+
                 <li class="menu-title">Penilaian</li>
 
                 <li>
@@ -116,16 +125,18 @@
                     </a>
                 </li>
 
-                <li class="menu-title mt-2">Pengguna</li>
+                @if (Auth::user()->role == 'super_admin')
+                    <li class="menu-title mt-2">Pengguna</li>
 
-                <li>
-                    <a href="{{ route('user.index') }}" class="tp-link">
-                        <span class="nav-icon">
-                            <iconify-icon icon="solar:users-group-rounded-bold-duotone"></iconify-icon>
-                        </span>
-                        <span> Managemen User </span>
-                    </a>
-                </li>
+                    <li>
+                        <a href="{{ route('user.index') }}" class="tp-link">
+                            <span class="nav-icon">
+                                <iconify-icon icon="solar:users-group-rounded-bold-duotone"></iconify-icon>
+                            </span>
+                            <span> Managemen User </span>
+                        </a>
+                    </li>
+                @endif
             </ul>
         </div>
         <!-- End Sidebar -->

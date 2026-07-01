@@ -11,8 +11,9 @@ class KriteriaController extends Controller
     public function index()
     {
         $kriteria = Kriteria::all();
+        $totalBobot = Kriteria::sum('bobot');
 
-        return view('Admin.Kriteria.kriteria_view', compact('kriteria'));
+        return view('Admin.Kriteria.kriteria_view', compact('kriteria', 'totalBobot'));
     }
 
     public function store(Request $request)
@@ -22,6 +23,12 @@ class KriteriaController extends Controller
             'bobot' => 'required|numeric',
             'atribut' => 'required',
         ]);
+
+        $totalBobot = Kriteria::sum('bobot');
+
+        if ($totalBobot + $request->bobot > 100) {
+            return back()->with('error', 'Total bobot tidak boleh melebihi 100%. Sisa bobot yang tersedia adalah ' . (100 - $totalBobot) . '%');
+        }
 
         $last = Kriteria::latest('id')->first();
 
@@ -52,6 +59,12 @@ class KriteriaController extends Controller
         ]);
 
         $kriteria = Kriteria::findOrFail($id);
+
+        $totalBobot = Kriteria::sum('bobot') - $kriteria->bobot;
+
+        if ($totalBobot + $request->bobot > 100) {
+            return back()->with('error', 'Total bobot tidak boleh melebihi 100%.');
+        }
 
         $kriteria->update([
             'nama_kriteria' => $request->nama_kriteria,

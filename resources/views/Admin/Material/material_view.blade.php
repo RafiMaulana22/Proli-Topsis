@@ -75,8 +75,9 @@
 
                                 <td>
                                     <button class="btn btn-info btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#modaldetailMaterial{{ $get->id }}">
-                                        <i class="mdi mdi-format-list-bulleted""></i>
+                                        data-bs-target="#modaldetailMaterial{{ $get->id }}" title="Lihat Detail">
+
+                                        <i class="mdi mdi-eye"></i>
                                     </button>
 
                                     <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
