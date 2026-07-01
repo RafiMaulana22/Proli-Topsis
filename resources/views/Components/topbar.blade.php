@@ -52,18 +52,6 @@
                         </a>
 
                         <!-- item-->
-                        <a class='dropdown-item notify-item rounded-2' href='pages-profile.html'>
-                            <iconify-icon icon="solar:settings-linear" class="fs-18 align-middle"></iconify-icon>
-                            <span>Setting</span>
-                        </a>
-
-                        <!-- item-->
-                        <a class='dropdown-item notify-item rounded-2' href='auth-lock-screen.html'>
-                            <iconify-icon icon="solar:lock-keyhole-outline" class="fs-18 align-middle"></iconify-icon>
-                            <span>Lock Screen</span>
-                        </a>
-
-                        <!-- item-->
                         <form action="{{ route('logout') }}" method="POST">
                             @csrf
 

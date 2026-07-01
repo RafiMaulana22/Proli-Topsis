@@ -16,6 +16,30 @@
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
 
+    <style>
+        .logo-box {
+            height: 140px !important;
+        }
+
+        .logo.logo-light {
+            display: flex !important;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .logo.logo-light img {
+            max-height: 70px;
+        }
+
+        .logo.logo-light h5 {
+            color: #fff;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+    </style>
+
 </head>
 
 <!-- body start -->

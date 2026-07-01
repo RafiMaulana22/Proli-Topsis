@@ -6,27 +6,14 @@
 
             <div class="logo-box">
 
-                <a href="{{ route('dashboard.index') }}" class="logo logo-light text-center">
+                <a href="{{ route('dashboard.index') }}" class="logo logo-light text-center py-3">
 
-                    <span class="logo-sm">
-                        <i class="mdi mdi-home-city text-white fs-3"></i>
-                    </span>
+                    <img src="{{ asset('assets/images/logo-proli.png') }}" alt="Logo PROLI"
+                        class="img-fluid d-block mx-auto" style="height:70px;">
 
-                    <span class="logo-lg text-white fw-bold fs-4">
+                    <h5 class="text-white fw-bold mt-2 mb-0">
                         PROLI
-                    </span>
-
-                </a>
-
-                <a href="{{ route('dashboard.index') }}" class="logo logo-dark text-center">
-
-                    <span class="logo-sm">
-                        <i class="mdi mdi-home-city text-primary fs-3"></i>
-                    </span>
-
-                    <span class="logo-lg text-dark fw-bold fs-4">
-                        PROLI
-                    </span>
+                    </h5>
 
                 </a>
 
