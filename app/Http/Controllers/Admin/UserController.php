@@ -23,7 +23,6 @@ class UserController extends Controller
             'username' => 'required|string|max:255|unique:users,username',
             'email'    => 'required|email|max:255|unique:users,email',
             'password' => 'required|string|min:8',
-            'role'     => 'required|in:admin,super_admin',
         ], [
             'username.unique' => 'Username ini sudah dipakai, silakan pilih yang lain.',
             'email.unique'    => 'Email ini sudah terdaftar.',
@@ -36,7 +35,7 @@ class UserController extends Controller
             'username' => $request->username,
             'email'    => $request->email,
             'password' => $request->password,
-            'role'     => $request->role,
+            'role'     => 'admin'
         ]);
 
         return redirect()->back()->with('success', 'Data User berhasil ditambahkan!');
@@ -51,14 +50,13 @@ class UserController extends Controller
             'username' => 'required|string|max:255|unique:users,username,' . $id,
             'email'    => 'required|email|max:255|unique:users,email,' . $id,
             'password' => 'nullable|string|min:8', // nullable berarti boleh kosong
-            'role'     => 'required|in:admin,super_admin',
         ]);
 
         $dataUpdate = [
             'nama'     => $request->nama,
             'username' => $request->username,
             'email'    => $request->email,
-            'role'     => $request->role,
+            'role'     => 'admin'
         ];
 
         if ($request->filled('password')) {

@@ -4,19 +4,10 @@
         <!--- Sidemenu -->
         <div id="sidebar-menu">
 
-            <div class="logo-box">
-
-                <a href="{{ route('dashboard.index') }}" class="logo logo-light text-center py-3">
-
-                    <img src="{{ asset('assets/images/logo-proli.png') }}" alt="Logo PROLI"
-                        class="img-fluid d-block mx-auto" style="height:70px;">
-
-                    <h5 class="text-white fw-bold mt-2 mb-0">
-                        PROLI
-                    </h5>
-
+            <div class="logo-box" style="margin-top: -35px;">
+                <a href="{{ route('dashboard.index') }}" class="logo logo-light logo-custom">
+                    <img src="{{ asset('assets/images/logo-proli.png') }}"  alt="Logo PROLI" class="logo-img">
                 </a>
-
             </div>
 
             <ul id="side-menu">
